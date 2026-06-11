@@ -2,8 +2,11 @@
 
 from imports import *
 print("Starting URLs Extractor")
-script_1='Href_Links_Extractor_Saver.py'
-script_2='Href_Downloader.py'
+BASE_DIR = os.path.dirname(os.path.abspath(__file__))
+
+script_1 = os.path.join(BASE_DIR, "Href_Links_Extractor_Saver.py")
+script_2 = os.path.join(BASE_DIR, "Href_Downloader.py")
+
 subprocess.run([sys.executable, script_1],check=True)
 
 print("*************************** URL Extraction Completed **************************.")

@@ -5,6 +5,7 @@ from selenium.webdriver.common.by import By
 from selenium.webdriver.support.ui import WebDriverWait
 from selenium.webdriver.support import expected_conditions as EC
 from selenium.common.exceptions import TimeoutException, WebDriverException
+from selenium.webdriver.chrome.service import Service
 from urllib.parse import urlparse
 import random
 import time
@@ -21,7 +22,6 @@ import subprocess
 # Configuration
 LINKS_DIR='Extracted_Links'
 REPORTS_DIRECTORY = "Report_Downloads"
-OUTPUT_DIR='Extracted_Links'
 input_file='urls.txt'
 date_part = datetime.now().strftime("%Y-%m-%d")
 

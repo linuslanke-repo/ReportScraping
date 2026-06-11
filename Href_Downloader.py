@@ -61,13 +61,19 @@ if __name__ == "__main__":
     print("Filtering shtml links if any")
 
     if os.path.exists(LINKS_DIR):
-        for filename in tqdm.tqdm(os.listdir(LINKS_DIR),desc="Downloading Reports", unit="company"):
+        if not REPORTS_DIRECTORY:
+            REPORTS_DIRECTORY = 'Report_Downloads'
+            os.makedirs(REPORTS_DIRECTORY, exist_ok=True)
+        TARGET_DIR = os.path.join(REPORTS_DIRECTORY, date_part)
+        SOURCE_DIR=  os.path.join(LINKS_DIR, date_part)
+        os.makedirs(TARGET_DIR, exist_ok=True)
+        for filename in tqdm.tqdm(os.listdir(SOURCE_DIR),desc="Downloading Reports", unit="company"):
             if filename.lower().endswith('.txt'):
-                file_path = os.path.join(LINKS_DIR, filename)
-                target_dir = os.path.join(REPORTS_DIRECTORY, date_part)
-                os.makedirs(target_dir, exist_ok=True)
+                file_path = os.path.join(SOURCE_DIR, filename)
+
                 folder_name=os.path.splitext(filename)[0]
-                COMPANY_NAME_DIR=os.path.join(target_dir,folder_name)
+                COMPANY_NAME_DIR=os.path.join(TARGET_DIR,folder_name)
+                os.makedirs(COMPANY_NAME_DIR, exist_ok=True)
                 with open(file_path, 'r',encoding='utf-8') as file:
                     ALL_URLS = [line.strip() for line in file if line.strip()]
 

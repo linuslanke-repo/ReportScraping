@@ -3,16 +3,21 @@
 from imports import *
 failed_url = []
 extraction_summary_log=[]
-def get_latest_pdf_href(url):
+def get_pdf_href(url):
+    os.environ['WDM_LOG_LEVEL'] = '0'
+    service = Service(log_output=os.devnull)
     options = Options()
     options.add_argument("--headless")
     options.add_argument("--disable-gpu")
     options.add_argument("--no-sandbox")
     options.add_argument("--ignore-certificate-errors")
+    options.add_argument("--silent")
+    options.add_experimental_option("excludeSwitches", ["enable-logging"])
+    options.add_argument("--log-level=3")
 
     driver = None
     try:
-        driver = webdriver.Chrome(options=options)
+        driver = webdriver.Chrome(service=service,options=options)
         href_list = []
         driver.get(url)
         wait = WebDriverWait(driver, 15)
@@ -64,15 +69,18 @@ target_urls = []
 if os.path.exists(input_file):
     with open(input_file,encoding='utf-8') as file:
         target_urls =[line.strip() for line in file if line.strip()]
-os.makedirs(OUTPUT_DIR,exist_ok=True)
+os.makedirs(LINKS_DIR,exist_ok=True)
 for url in tqdm.tqdm(target_urls,desc="Extracting report URLs", unit="company_url"):
     link_name = urlparse(url).netloc.replace('www.', '').replace('.com', '')
     delay = random.uniform(1.5, 5.5)
     time.sleep(delay)
-    result = get_latest_pdf_href(url)
+    result = get_pdf_href(url)
     # print(result)
     if result:
-        target_dir = os.path.join(OUTPUT_DIR, date_part)
+        if not LINKS_DIR:
+            LINKS_DIR = 'Extracted_Links'
+            os.makedirs(LINKS_DIR, exist_ok=True)
+        target_dir = os.path.join(LINKS_DIR, date_part)
         os.makedirs(target_dir, exist_ok=True)
         filepath = os.path.join(target_dir, f'{link_name}.txt')
         with open(filepath, 'w',encoding='utf-8') as f:
