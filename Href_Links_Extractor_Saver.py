@@ -7,7 +7,7 @@ def get_pdf_href(url):
     os.environ['WDM_LOG_LEVEL'] = '0'
     service = Service(log_output=os.devnull)
     options = Options()
-    options.add_argument("--headless")
+    # options.add_argument("--headless")
     options.add_argument("--disable-gpu")
     options.add_argument("--no-sandbox")
     options.add_argument("--ignore-certificate-errors")
@@ -20,17 +20,35 @@ def get_pdf_href(url):
         driver = webdriver.Chrome(service=service,options=options)
         href_list = []
         driver.get(url)
+        driver.maximize_window()
         wait = WebDriverWait(driver, 15)
 
+        # try:
+        #     accept_button = wait.until(EC.element_to_be_clickable((
+        #         By.XPATH,
+        #         "//button[contains(translate(., 'ABCDEFGHIJKLMNOPQRSTUVWXYZ', 'abcdefghijklmnopqrstuvwxyz'), 'accept') or contains(translate(., 'ABCDEFGHIJKLMNOPQRSTUVWXYZ', 'abcdefghijklmnopqrstuvwxyz'), 'agree')]"
+        #     )))
+        #     driver.execute_script("arguments[0].click();", accept_button)
+        # except TimeoutException:
+        #     pass
+        #Handling Accept button in both normal html page or in iframe
         try:
-            accept_button = wait.until(EC.element_to_be_clickable((
-                By.XPATH,
-                "//button[contains(translate(text(), 'ABCDEFGHIJKLMNOPQRSTUVWXYZ', 'abcdefghijklmnopqrstuvwxyz'), 'accept') or contains(translate(text(), 'ABCDEFGHIJKLMNOPQRSTUVWXYZ', 'abcdefghijklmnopqrstuvwxyz'), 'agree')]"
-            )))
+            try:
+                cookie_iframe = wait.until(EC.presence_of_element_located((By.XPATH, "//*[@id='CybotCookiebotDialogBodyUnderlay']")))
+            # "//iframe[contains(@id, 'Cookiebot') or contains(@id, 'cookie') or contains(@src, 'cookiebot')]")))
+                driver.switch_to.frame(cookie_iframe)
+                # //*[@id="CybotCookiebotDialogBodyUnderlay"]
+            except TimeoutException:
+                pass
+            accept_button = wait.until(EC.element_to_be_clickable((By.XPATH,"//button[contains(translate(., 'ABCDEFGHIJKLMNOPQRSTUVWXYZ', 'abcdefghijklmnopqrstuvwxyz'), 'accept') or contains(translate(., 'ABCDEFGHIJKLMNOPQRSTUVWXYZ', 'abcdefghijklmnopqrstuvwxyz'), 'agree')]")))
             driver.execute_script("arguments[0].click();", accept_button)
         except TimeoutException:
             pass
-
+        finally:
+            try:
+                driver.switch_to.default_content()
+            except Exception:
+                pass
         elements = []
         try:
             wait.until(EC.presence_of_element_located((By.TAG_NAME, "a")))
@@ -47,7 +65,7 @@ def get_pdf_href(url):
                 href = element.get_attribute("href")
                 if href:
                     url_lower = href.lower()
-                    if any(ext in url_lower for ext in [".pdf", "download", ".php", ".shtml"]):
+                    if any(ext in url_lower for ext in [".pdf", "download", ".php", ".shtml","file"]):
                         if href not in href_list:
                             href_list.append(href)
             except Exception:
@@ -63,6 +81,7 @@ def get_pdf_href(url):
         return "Failed to load or process the page."
     finally:
         if driver:
+            # pass
             driver.quit()
 
 target_urls = []
