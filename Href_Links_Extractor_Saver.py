@@ -7,7 +7,7 @@ def get_pdf_href(url):
     os.environ['WDM_LOG_LEVEL'] = '0'
     service = Service(log_output=os.devnull)
     options = Options()
-    # options.add_argument("--headless")
+    options.add_argument("--headless")
     options.add_argument("--disable-gpu")
     options.add_argument("--no-sandbox")
     options.add_argument("--ignore-certificate-errors")
@@ -15,9 +15,11 @@ def get_pdf_href(url):
     options.add_experimental_option("excludeSwitches", ["enable-logging"])
     options.add_argument("--log-level=3")
 
+
     driver = None
     try:
         driver = webdriver.Chrome(service=service,options=options)
+        driver.maximize_window()
         href_list = []
         driver.get(url)
         driver.maximize_window()
