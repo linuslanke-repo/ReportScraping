@@ -15,11 +15,7 @@ def get_pdf_href(url):
     options.add_experimental_option("excludeSwitches", ["enable-logging"])
     options.add_argument("--log-level=3")
     # Point to the exact Chrome location we created inside the Dockerfile
-    chrome_options.binary_location = "/usr/local/bin/google-chrome"
-    
-    # Start the driver cleanly using the system path link
-    service = Service(executable_path="/usr/local/bin/chromedriver")
-    driver = webdriver.Chrome(service=service, options=chrome_options)
+    driver = webdriver.Chrome(options=chrome_options)
 
     driver = None
     try:
