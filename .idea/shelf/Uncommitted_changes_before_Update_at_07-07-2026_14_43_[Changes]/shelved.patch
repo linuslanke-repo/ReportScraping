@@ -1,0 +1,796 @@
+Index: urls.txt
+IDEA additional info:
+Subsystem: com.intellij.openapi.diff.impl.patch.BaseRevisionTextPatchEP
+<+>https://www.equinor.com/investors/events-and-presentations\r\nhttps://www.cnrl.com/investors/events-presentations
+Subsystem: com.intellij.openapi.diff.impl.patch.CharsetEP
+<+>UTF-8
+===================================================================
+diff --git a/urls.txt b/urls.txt
+--- a/urls.txt	(revision afccadbbf83796d0810c13031559962cb2f947bd)
++++ b/urls.txt	(date 1782451882170)
+@@ -1,2 +1,32 @@
++https://www.surgutneftegas.ru/en/investors/essential_information/reporting/
++https://www.gazprom.com/investors/presentations/2021/
++https://investor.exxonmobil.com/news-events/ir-calendar
++https://www.kpc.com.kw/Publications
++https://totalenergies.com/investors/investors-presentations
++https://www.bp.com/en/global/corporate/investors/results-reporting-and-presentations.html
++https://www.novatek.ru/en/investors/presentations/
++https://www.eni.com/en-IT/investors/our-reports/financial-results.html
++https://sonatrach.com/en/pdf-category/rapports-en/#
++https://investor.ovintiv.com/
++https://www.sm-energy.com/investors/news-events/presentations
++https://ir.chordenergy.com/presentations
++https://ir.eqt.com/newsroom/news-releases/default.aspx
++https://investors.eogresources.com/events-and-presentations
++https://www.aramco.com/en/investors/reports-and-presentations
++https://www.rosneft.com/Investors/Reports_and_presentations/Consolidated_financial_statements/
++https://www.cnpc.com.cn/en/publications/publications.shtml
++https://www.chevron.com/investors/events-presentations
++https://www.investidorpetrobras.com.br/apresentacoes-relatorios-e-eventos/apresentacoes/
++https://www.shell.com/investors/results-and-reporting/quarterly-results.html 
++https://www.cnoocltd.com/english/investorrelations/resultspresentations/results/
++https://investors.expandenergy.com/
++https://www.conocophillips.com/investor-relations/investor-presentations/
+ https://www.equinor.com/investors/events-and-presentations
+-https://www.cnrl.com/investors/events-presentations
+\ No newline at end of file
++https://ir.diamondbackenergy.com/investors/events-presentations
++https://investors.devonenergy.com/investors/default.aspx
++https://www.cnrl.com/investors/events-presentations/
++https://investors.coterra.com/Investors/events-and-presentations/default.aspx
++http://www.sinopecgroup.com/group/en/bgjcbw/index.shtml
++https://investor.exxonmobil.com/news-events/investor-presentation
++https://www.shell.com/investors/investor-presentations
++
+Index: Orchestrator.py
+IDEA additional info:
+Subsystem: com.intellij.openapi.diff.impl.patch.BaseRevisionTextPatchEP
+<+>\r\n\r\nfrom imports import *\r\nprint(\"Starting URLs Extractor\")\r\nBASE_DIR = os.path.dirname(os.path.abspath(__file__))\r\n\r\nscript_1 = os.path.join(BASE_DIR, \"Href_Links_Extractor_Saver.py\")\r\nscript_2 = os.path.join(BASE_DIR, \"Href_Downloader.py\")\r\n\r\nsubprocess.run([sys.executable, script_1],check=True)\r\n\r\nprint(\"*************************** URL Extraction Completed **************************.\")\r\nsubprocess.run([sys.executable, script_2],check=True,encoding='utf-8')\r\nprint(\"*************************** Reports Downloaded **************************.\")\r\nprint(\"Pipeline Execution Finish\")
+Subsystem: com.intellij.openapi.diff.impl.patch.CharsetEP
+<+>UTF-8
+===================================================================
+diff --git a/Orchestrator.py b/Orchestrator.py
+--- a/Orchestrator.py	(revision afccadbbf83796d0810c13031559962cb2f947bd)
++++ b/Orchestrator.py	(date 1782451658531)
+@@ -12,4 +12,8 @@
+ print("*************************** URL Extraction Completed **************************.")
+ subprocess.run([sys.executable, script_2],check=True,encoding='utf-8')
+ print("*************************** Reports Downloaded **************************.")
+-print("Pipeline Execution Finish")
+\ No newline at end of file
++print("Pipeline Execution Finish")
++
++
++
++
+Index: Test_Arena/Test_OnlineExcel.py
+IDEA additional info:
+Subsystem: com.intellij.openapi.diff.impl.patch.BaseRevisionTextPatchEP
+<+>import io\r\nimport browser_cookie3\r\nimport pandas as pd\r\nimport requests\r\n\r\n# 1. Your original OneDrive/SharePoint URL\r\noriginal_url = \"https://pmgoperations-my.sharepoint.com/:x:/r/personal/sunil_lanke_globaldata_com/Documents/Report%20Download%20Test.xlsx?d=wf2496e9dbdb64f6cac9b0d0e17f36aef&csf=1&web=1&e=On89w6\"\r\n\r\n# 2. Correct API transformation for personal OneDrive/SharePoint paths\r\ndownload_url = original_url.replace(\"/:x:/r/\", \"/:x:/i/\").split(\"?\")[0] + \"?download=1\"\r\n\r\n# 3. Pull cookies from Chrome\r\ntry:\r\n    cookies = browser_cookie3.chrome(domain_name=\"sharepoint.com\")\r\nexcept Exception as e:\r\n    print(f\"Error reading browser cookies: {e}\")\r\n    print(\"Ensure Chrome is open and you are logged into SharePoint.\")\r\n    exit()\r\n\r\n# 4. Download file\r\nheaders = {\r\n    \"User-Agent\": \"Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/120.0.0.0 Safari/537.36\"\r\n}\r\nresponse = requests.get(download_url, cookies=cookies, headers=headers)\r\n\r\n# 5. Safety check: Verify content type before parsing\r\ncontent_type = response.headers.get('Content-Type', '')\r\n\r\nif response.status_code == 200 and \"html\" not in content_type:\r\n    # Successfully received a binary stream (Excel)\r\n    df = pd.read_excel(io.BytesIO(response.content))\r\n    print(\"--- Successfully loaded Excel Data ---\")\r\n    print(df.head())\r\nelse:\r\n    print(f\"Failed to fetch Excel file. Status code: {response.status_code}\")\r\n    print(f\"Server returned content type: {content_type}\")\r\n    print(\"\\n--- Raw response snippet (debugging text) ---\")\r\n    print(response.text[:500])  # Prints the error text/HTML from Microsoft\r\n
+Subsystem: com.intellij.openapi.diff.impl.patch.CharsetEP
+<+>UTF-8
+===================================================================
+diff --git a/Test_Arena/Test_OnlineExcel.py b/Test_Arena/Test_OnlineExcel.py
+--- a/Test_Arena/Test_OnlineExcel.py	(revision afccadbbf83796d0810c13031559962cb2f947bd)
++++ b/Test_Arena/Test_OnlineExcel.py	(date 1782451658531)
+@@ -1,38 +1,4 @@
+-import io
+-import browser_cookie3
+ import pandas as pd
+-import requests
+-
+-# 1. Your original OneDrive/SharePoint URL
+-original_url = "https://pmgoperations-my.sharepoint.com/:x:/r/personal/sunil_lanke_globaldata_com/Documents/Report%20Download%20Test.xlsx?d=wf2496e9dbdb64f6cac9b0d0e17f36aef&csf=1&web=1&e=On89w6"
+-
+-# 2. Correct API transformation for personal OneDrive/SharePoint paths
+-download_url = original_url.replace("/:x:/r/", "/:x:/i/").split("?")[0] + "?download=1"
+-
+-# 3. Pull cookies from Chrome
+-try:
+-    cookies = browser_cookie3.chrome(domain_name="sharepoint.com")
+-except Exception as e:
+-    print(f"Error reading browser cookies: {e}")
+-    print("Ensure Chrome is open and you are logged into SharePoint.")
+-    exit()
+-
+-# 4. Download file
+-headers = {
+-    "User-Agent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/120.0.0.0 Safari/537.36"
+-}
+-response = requests.get(download_url, cookies=cookies, headers=headers)
+-
+-# 5. Safety check: Verify content type before parsing
+-content_type = response.headers.get('Content-Type', '')
+-
+-if response.status_code == 200 and "html" not in content_type:
+-    # Successfully received a binary stream (Excel)
+-    df = pd.read_excel(io.BytesIO(response.content))
+-    print("--- Successfully loaded Excel Data ---")
+-    print(df.head())
+-else:
+-    print(f"Failed to fetch Excel file. Status code: {response.status_code}")
+-    print(f"Server returned content type: {content_type}")
+-    print("\n--- Raw response snippet (debugging text) ---")
+-    print(response.text[:500])  # Prints the error text/HTML from Microsoft
++excel_path=r"C:\Users\Sunil.Lanke\OneDrive - GlobalData PLC\Tasks\Tasks\Report Download Test.xlsx"
++df=pd.read_excel(excel_path, sheet_name='Sheet1')
++print(df.head())
+\ No newline at end of file
+Index: main.py
+IDEA additional info:
+Subsystem: com.intellij.openapi.diff.impl.patch.CharsetEP
+<+>UTF-8
+===================================================================
+diff --git a/main.py b/main.py
+new file mode 100644
+--- /dev/null	(date 1783415323873)
++++ b/main.py	(date 1783415323873)
+@@ -0,0 +1,43 @@
++import http.server
++import socketserver
++import os
++import threading
++import subprocess
++
++def run_your_scraper():
++    print("[Docker Engine] Starting your Orchestrator scraping pipeline...")
++    try:
++        # This executes your existing Orchestrator script inside the container
++        result = subprocess.run(["python", "Orchestrator.py"], capture_output=True, text=True)
++        print("[Docker Engine] Script Output:\n", result.stdout)
++        if result.stderr:
++            print("[Docker Engine] Script Errors:\n", result.stderr)
++    except Exception as e:
++        print(f"[Docker Engine] Failed to run scraping architecture: {e}")
++
++# Trigger the scraper execution in a separate background thread
++# This prevents the web server from freezing or timing out on Render
++threading.Thread(target=run_your_scraper, daemon=True).start()
++
++# Initialize the fallback web server layer to satisfy Render's port checker
++PORT = int(os.environ.get("PORT", 8080))
++class CloudStatusHandler(http.server.SimpleHTTPRequestHandler):
++    def do_GET(self):
++        self.send_response(200)
++        self.send_header("Content-type", "text/html")
++        self.end_headers()
++        html_response = """
++        <html>
++            <head><title>Scraper Status</title></head>
++            <body style='font-family: sans-serif; text-align: center; padding-top: 50px;'>
++                <h1>Report Scraping Engine Active</h1>
++                <p>Your web scraper container is executing background extraction loops.</p>
++                <p>Check your Render console log dashboard to view active scraping outputs.</p>
++            </body>
++        </html>
++        """
++        self.wfile.write(bytes(html_response, "utf-8"))
++
++with socketserver.TCPServer(("", PORT), CloudStatusHandler) as httpd:
++    print(f"[Docker Engine] Web status gateway heartbeat active on port {PORT}")
++    httpd.serve_forever()
+Index: Dockerfile
+IDEA additional info:
+Subsystem: com.intellij.openapi.diff.impl.patch.CharsetEP
+<+>UTF-8
+===================================================================
+diff --git a/Dockerfile b/Dockerfile
+new file mode 100644
+--- /dev/null	(date 1783415512577)
++++ b/Dockerfile	(date 1783415512577)
+@@ -0,0 +1,24 @@
++# 1. Use an official stable Python 3 CPython runtime base image
++FROM python:3.11-slim
++
++# 2. Prevent Python from buffering stdout/stderr outputs (makes cloud logs appear instantly)
++ENV PYTHONUNBUFFERED=1
++
++# 3. Create and set the structural working directory inside the container
++WORKDIR /app
++
++# 4. Copy the requirements file first to take advantage of Docker caching
++COPY requirements.txt .
++
++# 5. Install the third-party scraping dependencies
++RUN pip install --no-cache-dir -r requirements.txt
++
++# 6. Copy ALL your project directories and scripts into the container workspace
++# This accurately mirrors your entire VS Code directory tree structure inside the cloud
++COPY . .
++
++# 7. Explicitly expose port 8080 for incoming Render health checks
++EXPOSE 8080
++
++# 8. Set the execution trigger to launch our new coordinator script
++CMD ["python", "main.py"]
+Index: .idea/workspace.xml
+IDEA additional info:
+Subsystem: com.intellij.openapi.diff.impl.patch.BaseRevisionTextPatchEP
+<+><?xml version=\"1.0\" encoding=\"UTF-8\"?>\r\n<project version=\"4\">\r\n  <component name=\"AutoImportSettings\">\r\n    <option name=\"autoReloadType\" value=\"SELECTIVE\" />\r\n  </component>\r\n  <component name=\"ChangeListManager\">\r\n    <list default=\"true\" id=\"411a4ae7-3c64-42ca-a1bb-134d5f1b1b47\" name=\"Changes\" comment=\"First Commitment\">\r\n      <change beforePath=\"$PROJECT_DIR$/.idea/workspace.xml\" beforeDir=\"false\" afterPath=\"$PROJECT_DIR$/.idea/workspace.xml\" afterDir=\"false\" />\r\n      <change beforePath=\"$PROJECT_DIR$/Href_Downloader.py\" beforeDir=\"false\" afterPath=\"$PROJECT_DIR$/Href_Downloader.py\" afterDir=\"false\" />\r\n      <change beforePath=\"$PROJECT_DIR$/Href_Links_Extractor_Saver.py\" beforeDir=\"false\" afterPath=\"$PROJECT_DIR$/Href_Links_Extractor_Saver.py\" afterDir=\"false\" />\r\n      <change beforePath=\"$PROJECT_DIR$/Orchestrator.py\" beforeDir=\"false\" afterPath=\"$PROJECT_DIR$/Orchestrator.py\" afterDir=\"false\" />\r\n      <change beforePath=\"$PROJECT_DIR$/imports.py\" beforeDir=\"false\" afterPath=\"$PROJECT_DIR$/imports.py\" afterDir=\"false\" />\r\n      <change beforePath=\"$PROJECT_DIR$/urls.txt\" beforeDir=\"false\" afterPath=\"$PROJECT_DIR$/urls.txt\" afterDir=\"false\" />\r\n    </list>\r\n    <option name=\"SHOW_DIALOG\" value=\"false\" />\r\n    <option name=\"HIGHLIGHT_CONFLICTS\" value=\"true\" />\r\n    <option name=\"HIGHLIGHT_NON_ACTIVE_CHANGELIST\" value=\"false\" />\r\n    <option name=\"LAST_RESOLUTION\" value=\"IGNORE\" />\r\n  </component>\r\n  <component name=\"FileTemplateManagerImpl\">\r\n    <option name=\"RECENT_TEMPLATES\">\r\n      <list>\r\n        <option value=\"Python Script\" />\r\n      </list>\r\n    </option>\r\n  </component>\r\n  <component name=\"Git.Settings\">\r\n    <option name=\"RECENT_GIT_ROOT_PATH\" value=\"$PROJECT_DIR$\" />\r\n  </component>\r\n  <component name=\"GitHubPullRequestSearchHistory\">{\r\n  &quot;lastFilter&quot;: {\r\n    &quot;state&quot;: &quot;OPEN&quot;,\r\n    &quot;assignee&quot;: &quot;linuslanke-repo&quot;\r\n  }\r\n}</component>\r\n  <component name=\"GithubPullRequestsUISettings\">{\r\n  &quot;selectedUrlAndAccountId&quot;: {\r\n    &quot;url&quot;: &quot;https://github.com/linuslanke-repo/ReportScraping.git&quot;,\r\n    &quot;accountId&quot;: &quot;e300e36c-972c-46e5-9438-7c0e9563c748&quot;\r\n  }\r\n}</component>\r\n  <component name=\"ProjectColorInfo\">{\r\n  &quot;associatedIndex&quot;: 5\r\n}</component>\r\n  <component name=\"ProjectId\" id=\"3EzPsDaWFzE3jkeebNqjwbDN8Lm\" />\r\n  <component name=\"ProjectViewState\">\r\n    <option name=\"hideEmptyMiddlePackages\" value=\"true\" />\r\n    <option name=\"showLibraryContents\" value=\"true\" />\r\n  </component>\r\n  <component name=\"PropertiesComponent\"><![CDATA[{\r\n  \"keyToString\": {\r\n    \"ModuleVcsDetector.initialDetectionPerformed\": \"true\",\r\n    \"Python.Href_Downloader.executor\": \"Run\",\r\n    \"Python.Href_Links_Extractor_Saver.executor\": \"Run\",\r\n    \"Python.Orchestrator.executor\": \"Run\",\r\n    \"Python.Test_OnlineExcel.executor\": \"Run\",\r\n    \"RunOnceActivity.ShowReadmeOnStart\": \"true\",\r\n    \"RunOnceActivity.git.unshallow\": \"true\",\r\n    \"git-widget-placeholder\": \"master\",\r\n    \"settings.editor.selected.configurable\": \"com.jetbrains.python.configuration.PyActiveSdkModuleConfigurable\"\r\n  }\r\n}]]></component>\r\n  <component name=\"RunManager\" selected=\"Python.Orchestrator\">\r\n    <configuration name=\"Href_Downloader\" type=\"PythonConfigurationType\" factoryName=\"Python\" temporary=\"true\" nameIsGenerated=\"true\">\r\n      <module name=\"ReportScraping\" />\r\n      <option name=\"ENV_FILES\" value=\"\" />\r\n      <option name=\"INTERPRETER_OPTIONS\" value=\"\" />\r\n      <option name=\"PARENT_ENVS\" value=\"true\" />\r\n      <envs>\r\n        <env name=\"PYTHONUNBUFFERED\" value=\"1\" />\r\n      </envs>\r\n      <option name=\"SDK_HOME\" value=\"\" />\r\n      <option name=\"WORKING_DIRECTORY\" value=\"$PROJECT_DIR$\" />\r\n      <option name=\"IS_MODULE_SDK\" value=\"true\" />\r\n      <option name=\"ADD_CONTENT_ROOTS\" value=\"true\" />\r\n      <option name=\"ADD_SOURCE_ROOTS\" value=\"true\" />\r\n      <option name=\"SCRIPT_NAME\" value=\"$PROJECT_DIR$/Href_Downloader.py\" />\r\n      <option name=\"PARAMETERS\" value=\"\" />\r\n      <option name=\"SHOW_COMMAND_LINE\" value=\"false\" />\r\n      <option name=\"EMULATE_TERMINAL\" value=\"false\" />\r\n      <option name=\"MODULE_MODE\" value=\"false\" />\r\n      <option name=\"REDIRECT_INPUT\" value=\"false\" />\r\n      <option name=\"INPUT_FILE\" value=\"\" />\r\n      <method v=\"2\" />\r\n    </configuration>\r\n    <configuration name=\"Href_Links_Extractor_Saver\" type=\"PythonConfigurationType\" factoryName=\"Python\" temporary=\"true\" nameIsGenerated=\"true\">\r\n      <module name=\"ReportScraping\" />\r\n      <option name=\"ENV_FILES\" value=\"\" />\r\n      <option name=\"INTERPRETER_OPTIONS\" value=\"\" />\r\n      <option name=\"PARENT_ENVS\" value=\"true\" />\r\n      <envs>\r\n        <env name=\"PYTHONUNBUFFERED\" value=\"1\" />\r\n      </envs>\r\n      <option name=\"SDK_HOME\" value=\"\" />\r\n      <option name=\"WORKING_DIRECTORY\" value=\"$PROJECT_DIR$\" />\r\n      <option name=\"IS_MODULE_SDK\" value=\"true\" />\r\n      <option name=\"ADD_CONTENT_ROOTS\" value=\"true\" />\r\n      <option name=\"ADD_SOURCE_ROOTS\" value=\"true\" />\r\n      <option name=\"SCRIPT_NAME\" value=\"$PROJECT_DIR$/Href_Links_Extractor_Saver.py\" />\r\n      <option name=\"PARAMETERS\" value=\"\" />\r\n      <option name=\"SHOW_COMMAND_LINE\" value=\"false\" />\r\n      <option name=\"EMULATE_TERMINAL\" value=\"false\" />\r\n      <option name=\"MODULE_MODE\" value=\"false\" />\r\n      <option name=\"REDIRECT_INPUT\" value=\"false\" />\r\n      <option name=\"INPUT_FILE\" value=\"\" />\r\n      <method v=\"2\" />\r\n    </configuration>\r\n    <configuration name=\"Orchestrator\" type=\"PythonConfigurationType\" factoryName=\"Python\" temporary=\"true\" nameIsGenerated=\"true\">\r\n      <module name=\"ReportScraping\" />\r\n      <option name=\"ENV_FILES\" value=\"\" />\r\n      <option name=\"INTERPRETER_OPTIONS\" value=\"\" />\r\n      <option name=\"PARENT_ENVS\" value=\"true\" />\r\n      <envs>\r\n        <env name=\"PYTHONUNBUFFERED\" value=\"1\" />\r\n      </envs>\r\n      <option name=\"SDK_HOME\" value=\"\" />\r\n      <option name=\"WORKING_DIRECTORY\" value=\"$PROJECT_DIR$\" />\r\n      <option name=\"IS_MODULE_SDK\" value=\"true\" />\r\n      <option name=\"ADD_CONTENT_ROOTS\" value=\"true\" />\r\n      <option name=\"ADD_SOURCE_ROOTS\" value=\"true\" />\r\n      <option name=\"SCRIPT_NAME\" value=\"$PROJECT_DIR$/Orchestrator.py\" />\r\n      <option name=\"PARAMETERS\" value=\"\" />\r\n      <option name=\"SHOW_COMMAND_LINE\" value=\"false\" />\r\n      <option name=\"EMULATE_TERMINAL\" value=\"false\" />\r\n      <option name=\"MODULE_MODE\" value=\"false\" />\r\n      <option name=\"REDIRECT_INPUT\" value=\"false\" />\r\n      <option name=\"INPUT_FILE\" value=\"\" />\r\n      <method v=\"2\" />\r\n    </configuration>\r\n    <configuration name=\"Test_OnlineExcel\" type=\"PythonConfigurationType\" factoryName=\"Python\" temporary=\"true\" nameIsGenerated=\"true\">\r\n      <module name=\"ReportScraping\" />\r\n      <option name=\"ENV_FILES\" value=\"\" />\r\n      <option name=\"INTERPRETER_OPTIONS\" value=\"\" />\r\n      <option name=\"PARENT_ENVS\" value=\"true\" />\r\n      <envs>\r\n        <env name=\"PYTHONUNBUFFERED\" value=\"1\" />\r\n      </envs>\r\n      <option name=\"SDK_HOME\" value=\"\" />\r\n      <option name=\"WORKING_DIRECTORY\" value=\"$PROJECT_DIR$/Test_Arena\" />\r\n      <option name=\"IS_MODULE_SDK\" value=\"true\" />\r\n      <option name=\"ADD_CONTENT_ROOTS\" value=\"true\" />\r\n      <option name=\"ADD_SOURCE_ROOTS\" value=\"true\" />\r\n      <option name=\"SCRIPT_NAME\" value=\"$PROJECT_DIR$/Test_Arena/Test_OnlineExcel.py\" />\r\n      <option name=\"PARAMETERS\" value=\"\" />\r\n      <option name=\"SHOW_COMMAND_LINE\" value=\"false\" />\r\n      <option name=\"EMULATE_TERMINAL\" value=\"false\" />\r\n      <option name=\"MODULE_MODE\" value=\"false\" />\r\n      <option name=\"REDIRECT_INPUT\" value=\"false\" />\r\n      <option name=\"INPUT_FILE\" value=\"\" />\r\n      <method v=\"2\" />\r\n    </configuration>\r\n    <recent_temporary>\r\n      <list>\r\n        <item itemvalue=\"Python.Orchestrator\" />\r\n        <item itemvalue=\"Python.Href_Downloader\" />\r\n        <item itemvalue=\"Python.Test_OnlineExcel\" />\r\n        <item itemvalue=\"Python.Href_Links_Extractor_Saver\" />\r\n      </list>\r\n    </recent_temporary>\r\n  </component>\r\n  <component name=\"SharedIndexes\">\r\n    <attachedChunks>\r\n      <set>\r\n        <option value=\"bundled-python-sdk-890ed5b35930-d9c5bdb153f4-com.jetbrains.pycharm.pro.sharedIndexes.bundled-PY-251.23774.444\" />\r\n      </set>\r\n    </attachedChunks>\r\n  </component>\r\n  <component name=\"TaskManager\">\r\n    <task active=\"true\" id=\"Default\" summary=\"Default task\">\r\n      <changelist id=\"411a4ae7-3c64-42ca-a1bb-134d5f1b1b47\" name=\"Changes\" comment=\"\" />\r\n      <created>1781178628470</created>\r\n      <option name=\"number\" value=\"Default\" />\r\n      <option name=\"presentableId\" value=\"Default\" />\r\n      <updated>1781178628470</updated>\r\n    </task>\r\n    <task id=\"LOCAL-00001\" summary=\"First Commitment\">\r\n      <option name=\"closed\" value=\"true\" />\r\n      <created>1781215975669</created>\r\n      <option name=\"number\" value=\"00001\" />\r\n      <option name=\"presentableId\" value=\"LOCAL-00001\" />\r\n      <option name=\"project\" value=\"LOCAL\" />\r\n      <updated>1781215975669</updated>\r\n    </task>\r\n    <option name=\"localTasksCounter\" value=\"2\" />\r\n    <servers />\r\n  </component>\r\n  <component name=\"VcsManagerConfiguration\">\r\n    <MESSAGE value=\"First Commitment\" />\r\n    <option name=\"LAST_COMMIT_MESSAGE\" value=\"First Commitment\" />\r\n  </component>\r\n  <component name=\"XDebuggerManager\">\r\n    <breakpoint-manager>\r\n      <breakpoints>\r\n        <line-breakpoint enabled=\"true\" suspend=\"THREAD\" type=\"python-line\">\r\n          <url>file://$PROJECT_DIR$/Href_Downloader.py</url>\r\n          <line>62</line>\r\n          <option name=\"timeStamp\" value=\"3\" />\r\n        </line-breakpoint>\r\n      </breakpoints>\r\n    </breakpoint-manager>\r\n  </component>\r\n</project>
+Subsystem: com.intellij.openapi.diff.impl.patch.CharsetEP
+<+>UTF-8
+===================================================================
+diff --git a/.idea/workspace.xml b/.idea/workspace.xml
+--- a/.idea/workspace.xml	(revision afccadbbf83796d0810c13031559962cb2f947bd)
++++ b/.idea/workspace.xml	(date 1783415453712)
+@@ -4,12 +4,13 @@
+     <option name="autoReloadType" value="SELECTIVE" />
+   </component>
+   <component name="ChangeListManager">
+-    <list default="true" id="411a4ae7-3c64-42ca-a1bb-134d5f1b1b47" name="Changes" comment="First Commitment">
++    <list default="true" id="411a4ae7-3c64-42ca-a1bb-134d5f1b1b47" name="Changes" comment="Second Commitment">
++      <change afterPath="$PROJECT_DIR$/main.py" afterDir="false" />
++      <change afterPath="$PROJECT_DIR$/requirements.txt" afterDir="false" />
+       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
+-      <change beforePath="$PROJECT_DIR$/Href_Downloader.py" beforeDir="false" afterPath="$PROJECT_DIR$/Href_Downloader.py" afterDir="false" />
+       <change beforePath="$PROJECT_DIR$/Href_Links_Extractor_Saver.py" beforeDir="false" afterPath="$PROJECT_DIR$/Href_Links_Extractor_Saver.py" afterDir="false" />
+       <change beforePath="$PROJECT_DIR$/Orchestrator.py" beforeDir="false" afterPath="$PROJECT_DIR$/Orchestrator.py" afterDir="false" />
+-      <change beforePath="$PROJECT_DIR$/imports.py" beforeDir="false" afterPath="$PROJECT_DIR$/imports.py" afterDir="false" />
++      <change beforePath="$PROJECT_DIR$/Test_Arena/Test_OnlineExcel.py" beforeDir="false" afterPath="$PROJECT_DIR$/Test_Arena/Test_OnlineExcel.py" afterDir="false" />
+       <change beforePath="$PROJECT_DIR$/urls.txt" beforeDir="false" afterPath="$PROJECT_DIR$/urls.txt" afterDir="false" />
+     </list>
+     <option name="SHOW_DIALOG" value="false" />
+@@ -47,21 +48,55 @@
+     <option name="hideEmptyMiddlePackages" value="true" />
+     <option name="showLibraryContents" value="true" />
+   </component>
+-  <component name="PropertiesComponent"><![CDATA[{
+-  "keyToString": {
+-    "ModuleVcsDetector.initialDetectionPerformed": "true",
+-    "Python.Href_Downloader.executor": "Run",
+-    "Python.Href_Links_Extractor_Saver.executor": "Run",
+-    "Python.Orchestrator.executor": "Run",
+-    "Python.Test_OnlineExcel.executor": "Run",
+-    "RunOnceActivity.ShowReadmeOnStart": "true",
+-    "RunOnceActivity.git.unshallow": "true",
+-    "git-widget-placeholder": "master",
+-    "settings.editor.selected.configurable": "com.jetbrains.python.configuration.PyActiveSdkModuleConfigurable"
++  <component name="PropertiesComponent">{
++  &quot;keyToString&quot;: {
++    &quot;ModuleVcsDetector.initialDetectionPerformed&quot;: &quot;true&quot;,
++    &quot;Python.Ant.executor&quot;: &quot;Debug&quot;,
++    &quot;Python.Href_Downloader.executor&quot;: &quot;Run&quot;,
++    &quot;Python.Href_Links_Extractor_Saver.executor&quot;: &quot;Run&quot;,
++    &quot;Python.Orchestrator.executor&quot;: &quot;Run&quot;,
++    &quot;Python.Test_OnlineExcel.executor&quot;: &quot;Run&quot;,
++    &quot;Python.scratch_45.executor&quot;: &quot;Run&quot;,
++    &quot;Python.scratch_46.executor&quot;: &quot;Run&quot;,
++    &quot;Python.scratch_48.executor&quot;: &quot;Run&quot;,
++    &quot;RunOnceActivity.ShowReadmeOnStart&quot;: &quot;true&quot;,
++    &quot;RunOnceActivity.git.unshallow&quot;: &quot;true&quot;,
++    &quot;git-widget-placeholder&quot;: &quot;master&quot;,
++    &quot;settings.editor.selected.configurable&quot;: &quot;editor.preferences.completion&quot;
++  },
++  &quot;keyToStringList&quot;: {
++    &quot;com.intellij.ide.scratch.ScratchImplUtil$2/New Scratch File&quot;: [
++      &quot;Python&quot;,
++      &quot;JSON&quot;,
++      &quot;TEXT&quot;,
++      &quot;Jupyter&quot;
++    ]
+   }
+-}]]></component>
++}</component>
+   <component name="RunManager" selected="Python.Orchestrator">
+-    <configuration name="Href_Downloader" type="PythonConfigurationType" factoryName="Python" temporary="true" nameIsGenerated="true">
++    <configuration name="Ant" type="PythonConfigurationType" factoryName="Python" temporary="true" nameIsGenerated="true">
++      <module name="ReportScraping" />
++      <option name="ENV_FILES" value="" />
++      <option name="INTERPRETER_OPTIONS" value="" />
++      <option name="PARENT_ENVS" value="true" />
++      <envs>
++        <env name="PYTHONUNBUFFERED" value="1" />
++      </envs>
++      <option name="SDK_HOME" value="" />
++      <option name="WORKING_DIRECTORY" value="$APPLICATION_CONFIG_DIR$/scratches" />
++      <option name="IS_MODULE_SDK" value="false" />
++      <option name="ADD_CONTENT_ROOTS" value="true" />
++      <option name="ADD_SOURCE_ROOTS" value="true" />
++      <option name="SCRIPT_NAME" value="$APPLICATION_CONFIG_DIR$/scratches/Ant.py" />
++      <option name="PARAMETERS" value="" />
++      <option name="SHOW_COMMAND_LINE" value="false" />
++      <option name="EMULATE_TERMINAL" value="false" />
++      <option name="MODULE_MODE" value="false" />
++      <option name="REDIRECT_INPUT" value="false" />
++      <option name="INPUT_FILE" value="" />
++      <method v="2" />
++    </configuration>
++    <configuration name="Orchestrator" type="PythonConfigurationType" factoryName="Python" temporary="true" nameIsGenerated="true">
+       <module name="ReportScraping" />
+       <option name="ENV_FILES" value="" />
+       <option name="INTERPRETER_OPTIONS" value="" />
+@@ -74,7 +109,7 @@
+       <option name="IS_MODULE_SDK" value="true" />
+       <option name="ADD_CONTENT_ROOTS" value="true" />
+       <option name="ADD_SOURCE_ROOTS" value="true" />
+-      <option name="SCRIPT_NAME" value="$PROJECT_DIR$/Href_Downloader.py" />
++      <option name="SCRIPT_NAME" value="$PROJECT_DIR$/Orchestrator.py" />
+       <option name="PARAMETERS" value="" />
+       <option name="SHOW_COMMAND_LINE" value="false" />
+       <option name="EMULATE_TERMINAL" value="false" />
+@@ -83,7 +118,7 @@
+       <option name="INPUT_FILE" value="" />
+       <method v="2" />
+     </configuration>
+-    <configuration name="Href_Links_Extractor_Saver" type="PythonConfigurationType" factoryName="Python" temporary="true" nameIsGenerated="true">
++    <configuration name="scratch_45" type="PythonConfigurationType" factoryName="Python" temporary="true" nameIsGenerated="true">
+       <module name="ReportScraping" />
+       <option name="ENV_FILES" value="" />
+       <option name="INTERPRETER_OPTIONS" value="" />
+@@ -92,11 +127,11 @@
+         <env name="PYTHONUNBUFFERED" value="1" />
+       </envs>
+       <option name="SDK_HOME" value="" />
+-      <option name="WORKING_DIRECTORY" value="$PROJECT_DIR$" />
+-      <option name="IS_MODULE_SDK" value="true" />
++      <option name="WORKING_DIRECTORY" value="$APPLICATION_CONFIG_DIR$/scratches" />
++      <option name="IS_MODULE_SDK" value="false" />
+       <option name="ADD_CONTENT_ROOTS" value="true" />
+       <option name="ADD_SOURCE_ROOTS" value="true" />
+-      <option name="SCRIPT_NAME" value="$PROJECT_DIR$/Href_Links_Extractor_Saver.py" />
++      <option name="SCRIPT_NAME" value="$APPLICATION_CONFIG_DIR$/scratches/scratch_45.py" />
+       <option name="PARAMETERS" value="" />
+       <option name="SHOW_COMMAND_LINE" value="false" />
+       <option name="EMULATE_TERMINAL" value="false" />
+@@ -105,7 +140,7 @@
+       <option name="INPUT_FILE" value="" />
+       <method v="2" />
+     </configuration>
+-    <configuration name="Orchestrator" type="PythonConfigurationType" factoryName="Python" temporary="true" nameIsGenerated="true">
++    <configuration name="scratch_46" type="PythonConfigurationType" factoryName="Python" temporary="true" nameIsGenerated="true">
+       <module name="ReportScraping" />
+       <option name="ENV_FILES" value="" />
+       <option name="INTERPRETER_OPTIONS" value="" />
+@@ -114,11 +149,11 @@
+         <env name="PYTHONUNBUFFERED" value="1" />
+       </envs>
+       <option name="SDK_HOME" value="" />
+-      <option name="WORKING_DIRECTORY" value="$PROJECT_DIR$" />
+-      <option name="IS_MODULE_SDK" value="true" />
++      <option name="WORKING_DIRECTORY" value="$APPLICATION_CONFIG_DIR$/scratches" />
++      <option name="IS_MODULE_SDK" value="false" />
+       <option name="ADD_CONTENT_ROOTS" value="true" />
+       <option name="ADD_SOURCE_ROOTS" value="true" />
+-      <option name="SCRIPT_NAME" value="$PROJECT_DIR$/Orchestrator.py" />
++      <option name="SCRIPT_NAME" value="$APPLICATION_CONFIG_DIR$/scratches/scratch_46.py" />
+       <option name="PARAMETERS" value="" />
+       <option name="SHOW_COMMAND_LINE" value="false" />
+       <option name="EMULATE_TERMINAL" value="false" />
+@@ -127,7 +162,7 @@
+       <option name="INPUT_FILE" value="" />
+       <method v="2" />
+     </configuration>
+-    <configuration name="Test_OnlineExcel" type="PythonConfigurationType" factoryName="Python" temporary="true" nameIsGenerated="true">
++    <configuration name="scratch_48" type="PythonConfigurationType" factoryName="Python" temporary="true" nameIsGenerated="true">
+       <module name="ReportScraping" />
+       <option name="ENV_FILES" value="" />
+       <option name="INTERPRETER_OPTIONS" value="" />
+@@ -136,11 +171,11 @@
+         <env name="PYTHONUNBUFFERED" value="1" />
+       </envs>
+       <option name="SDK_HOME" value="" />
+-      <option name="WORKING_DIRECTORY" value="$PROJECT_DIR$/Test_Arena" />
+-      <option name="IS_MODULE_SDK" value="true" />
++      <option name="WORKING_DIRECTORY" value="$APPLICATION_CONFIG_DIR$/scratches" />
++      <option name="IS_MODULE_SDK" value="false" />
+       <option name="ADD_CONTENT_ROOTS" value="true" />
+       <option name="ADD_SOURCE_ROOTS" value="true" />
+-      <option name="SCRIPT_NAME" value="$PROJECT_DIR$/Test_Arena/Test_OnlineExcel.py" />
++      <option name="SCRIPT_NAME" value="$APPLICATION_CONFIG_DIR$/scratches/scratch_48.py" />
+       <option name="PARAMETERS" value="" />
+       <option name="SHOW_COMMAND_LINE" value="false" />
+       <option name="EMULATE_TERMINAL" value="false" />
+@@ -152,9 +187,10 @@
+     <recent_temporary>
+       <list>
+         <item itemvalue="Python.Orchestrator" />
+-        <item itemvalue="Python.Href_Downloader" />
+-        <item itemvalue="Python.Test_OnlineExcel" />
+-        <item itemvalue="Python.Href_Links_Extractor_Saver" />
++        <item itemvalue="Python.Ant" />
++        <item itemvalue="Python.scratch_48" />
++        <item itemvalue="Python.scratch_46" />
++        <item itemvalue="Python.scratch_45" />
+       </list>
+     </recent_temporary>
+   </component>
+@@ -181,20 +217,39 @@
+       <option name="project" value="LOCAL" />
+       <updated>1781215975669</updated>
+     </task>
+-    <option name="localTasksCounter" value="2" />
++    <task id="LOCAL-00002" summary="Second Commitment">
++      <option name="closed" value="true" />
++      <created>1781220700160</created>
++      <option name="number" value="00002" />
++      <option name="presentableId" value="LOCAL-00002" />
++      <option name="project" value="LOCAL" />
++      <updated>1781220700160</updated>
++    </task>
++    <option name="localTasksCounter" value="3" />
+     <servers />
+   </component>
+   <component name="VcsManagerConfiguration">
+     <MESSAGE value="First Commitment" />
+-    <option name="LAST_COMMIT_MESSAGE" value="First Commitment" />
++    <MESSAGE value="Second Commitment" />
++    <option name="LAST_COMMIT_MESSAGE" value="Second Commitment" />
+   </component>
+   <component name="XDebuggerManager">
+     <breakpoint-manager>
+       <breakpoints>
+         <line-breakpoint enabled="true" suspend="THREAD" type="python-line">
+           <url>file://$PROJECT_DIR$/Href_Downloader.py</url>
+-          <line>62</line>
++          <line>48</line>
+           <option name="timeStamp" value="3" />
++        </line-breakpoint>
++        <line-breakpoint enabled="true" suspend="THREAD" type="python-line">
++          <url>file://$PROJECT_DIR$/Href_Links_Extractor_Saver.py</url>
++          <line>65</line>
++          <option name="timeStamp" value="4" />
++        </line-breakpoint>
++        <line-breakpoint enabled="true" suspend="THREAD" type="python-line">
++          <url>file://$APPLICATION_CONFIG_DIR$/scratches/Ant.py</url>
++          <line>9</line>
++          <option name="timeStamp" value="5" />
+         </line-breakpoint>
+       </breakpoints>
+     </breakpoint-manager>
+Index: requirements.txt
+IDEA additional info:
+Subsystem: com.intellij.openapi.diff.impl.patch.CharsetEP
+<+>UTF-8
+===================================================================
+diff --git a/requirements.txt b/requirements.txt
+new file mode 100644
+--- /dev/null	(date 1783415453671)
++++ b/requirements.txt	(date 1783415453671)
+@@ -0,0 +1,315 @@
++2to3==1.0
++about-time==4.2.1
++accelerate==1.1.1
++Addons-Tkinter==0.1
++alive-progress==3.2.0
++altgraph==0.17.4
++annotated-types==0.7.0
++anyio==3.7.1
++argon2-cffi==23.1.0
++argon2-cffi-bindings==21.2.0
++args==0.1.0
++arro3-core==0.8.0
++arrow==1.3.0
++asttokens==2.4.1
++async-lru==2.0.4
++attrs==23.2.0
++autoviz==0.1.905
++Babel==2.15.0
++bcpy==0.1.8
++beautifulsoup4==4.12.3
++bioc==2.1
++bleach==6.1.0
++bokeh==3.4.2
++boto3==1.35.76
++botocore==1.35.76
++Brotli==1.1.0
++browser-cookie3==0.20.1
++camelot-py==0.9.0
++certifi==2026.5.20
++cffi==2.0.0
++chardet==5.2.0
++charset-normalizer==3.3.2
++chromedriver-autoinstaller==0.6.4
++click==8.1.7
++clint==0.5.1
++colorama==0.4.6
++colorcet==3.1.0
++comm==0.2.2
++configparser==7.0.0
++conllu==4.5.3
++contourpy==1.2.1
++cryptography==43.0.3
++curl_cffi==0.15.0
++cycler==0.12.1
++dash==2.17.1
++dash-bootstrap-components==1.3.1
++dash-core-components==2.0.0
++dash-html-components==2.0.0
++dash-table==5.0.0
++dash_colorscales==0.0.4
++dash_daq==0.5.0
++DateTime==5.5
++debugpy==1.8.2
++decorator==5.1.1
++defusedxml==0.7.1
++delta_spark==4.3.0
++deltalake==1.4.2
++Deprecated==1.3.1
++distro==1.9.0
++docopt==0.6.2
++dtale==3.13.1
++emoji==2.12.1
++enchant==0.0.1
++et-xmlfile==1.1.0
++executing==2.0.1
++fastjsonschema==2.20.0
++filelock==3.16.1
++flair==0.14.0
++Flask==2.2.5
++Flask-Compress==1.15
++flask-ngrok==0.0.25
++fonttools==4.53.1
++fqdn==1.5.1
++fsspec==2024.6.1
++ftfy==6.3.1
++future==1.0.0
++fuzzywuzzy==0.18.0
++gdown==5.2.0
++glob2==0.7
++googlesearch-python==1.3.0
++grapheme==0.6.0
++greenlet==3.0.3
++h11==0.14.0
++holoviews==1.19.1
++httpcore==1.0.5
++httpx==0.27.0
++huggingface-hub==0.26.3
++hvplot==0.10.0
++idna==3.7
++importlib_metadata==8.0.0
++importlib_resources==6.4.0
++intervaltree==3.1.0
++ipykernel==6.29.5
++ipython==8.26.0
++ipython-genutils==0.2.0
++ipywidgets==8.1.5
++isoduration==20.11.0
++itsdangerous==2.2.0
++jedi==0.19.1
++Jinja2==3.1.4
++jmespath==1.0.1
++joblib==1.4.2
++json5==0.9.25
++jsonlines==4.0.0
++jsonpointer==3.0.0
++jsonschema==4.22.0
++jsonschema-specifications==2023.12.1
++jupter==0.1.0
++jupyter==1.1.1
++jupyter-console==6.6.3
++jupyter-events==0.12.0
++jupyter-highlight-selected-word==0.2.0
++jupyter-lsp==2.2.5
++jupyter_client==8.6.2
++jupyter_contrib_core==0.4.2
++jupyter_core==5.7.2
++jupyter_latex_envs==1.4.6
++jupyter_nbextensions_configurator==0.6.4
++jupyter_server==2.15.0
++jupyter_server_terminals==0.5.3
++jupyterlab==4.2.7
++jupyterlab_pygments==0.3.0
++jupyterlab_server==2.27.2
++jupyterlab_widgets==3.0.13
++kaleido==0.2.1
++keyboard==0.13.5
++kiwisolver==1.4.5
++langdetect==1.0.9
++Levenshtein==0.26.0
++linkify-it-py==2.0.3
++lxml==5.3.0
++lz4==4.3.3
++Markdown==3.6
++markdown-it-py==3.0.0
++MarkupSafe==2.1.5
++matplotlib==3.9.1
++matplotlib-inline==0.1.7
++mdit-py-plugins==0.4.1
++mdurl==0.1.2
++missingno==0.5.2
++mistune==3.0.2
++more-itertools==10.5.0
++MouseInfo==0.1.3
++mpld3==0.5.10
++mpmath==1.3.0
++msal==1.37.0
++mypy_extensions==1.1.0
++nbclassic==0.5.6
++nbclient==0.10.0
++nbconvert==7.16.4
++nbformat==5.10.4
++nest-asyncio==1.6.0
++networkx==3.3
++nltk==3.8.1
++notebook==7.2.1
++notebook_shim==0.2.4
++numpy==1.26.4
++Office365-REST-Python-Client==2.6.2
++opencv-python==4.10.0.84
++openpyxl==3.1.5
++outcome==1.3.0.post0
++overrides==7.7.0
++packaging==24.1
++pandas==2.2.2
++pandas-dq==1.29
++pandera==0.29.0
++pandocfilters==1.5.1
++panel==1.4.4
++param==2.1.1
++parso==0.8.4
++patsy==0.5.6
++pdfminer.six==20231228
++pdfplumber==0.11.4
++pefile==2024.8.26
++perc==1.0.3
++pillow==10.4.0
++platformdirs==4.2.2
++plotly==5.22.0
++polyfuzz==0.4.2
++pptree==3.1
++progress==1.6
++progressbar2==4.5.0
++prometheus_client==0.20.0
++prompt_toolkit==3.0.47
++protobuf==5.29.1
++psutil==6.0.0
++pure-eval==0.2.2
++py4j==0.10.9.9
++pyamg==5.2.1
++pyarrow==23.0.1
++PyAutoGUI==0.9.54
++pycparser==2.22
++pycryptodomex==3.23.0
++pydantic==2.12.5
++pydantic_core==2.41.5
++PyGetWindow==0.0.9
++Pygments==2.18.0
++pyinstaller==6.10.0
++pyinstaller-hooks-contrib==2024.8
++PyJWT==2.13.0
++PyMsgBox==1.0.9
++PyMySQL==1.1.1
++pyodbc==5.1.0
++pyparsing==3.1.2
++pypdf==6.14.2
++PyPDF2==3.0.1
++pypdfium2==4.30.0
++pyperclip==1.9.0
++PyRect==0.2.0
++PyScreeze==0.1.30
++PySocks==1.7.1
++pyspark==4.1.1
++python-dateutil==2.9.0.post0
++python-dotenv==1.0.1
++python-json-logger==2.0.7
++python-Levenshtein==0.26.0
++python-utils==3.9.0
++pytorch_revgrad==0.2.0
++pytweening==1.2.0
++pytz==2024.1
++pyviz_comms==3.0.2
++pywin32==306
++pywin32-ctypes==0.2.3
++pywinpty==2.0.13
++PyYAML==6.0.1
++pyzmq==26.0.3
++RapidFuzz==3.10.0
++referencing==0.35.1
++regex==2024.5.15
++requests==2.32.3
++retrying==1.3.4
++rfc3339-validator==0.1.4
++rfc3986-validator==0.1.1
++rich==15.0.0
++rpds-py==0.18.1
++s3transfer==0.10.4
++safetensors==0.4.5
++scikit-learn==1.5.1
++scipy==1.13.1
++seaborn==0.13.2
++segtok==1.5.11
++selenium==4.22.0
++semver==3.0.2
++Send2Trash==1.8.3
++sentencepiece==0.2.0
++setuptools==75.1.0
++shadowcopy==0.0.4
++shutils==0.1.0
++six==1.16.0
++sniffio==1.3.1
++sortedcontainers==2.4.0
++soupsieve==2.5
++SQLAlchemy==2.0.31
++sqlitedict==2.1.0
++squarify==0.4.3
++stack-data==0.6.3
++statsmodels==0.14.2
++strsimpy==0.2.1
++sweetviz==2.3.1
++sympy==1.13.1
++tabula-py==2.10.0
++tabulate==0.9.0
++tenacity==8.5.0
++terminado==0.18.1
++textblob==0.18.0.post0
++textdistance==4.6.3
++threadpoolctl==3.5.0
++tinycss2==1.3.0
++tk==0.1.0
++tokenizers==0.20.3
++torch==2.5.1
++tornado==6.4.1
++tqdm==4.66.4
++traitlets==5.14.3
++transformer-smaller-training-vocab==0.4.0
++transformers==4.46.3
++trio==0.26.0
++trio-websocket==0.11.1
++turtles==1.0.0
++typeguard==4.5.1
++types-python-dateutil==2.9.0.20240316
++typing-inspect==0.9.0
++typing-inspection==0.4.2
++typing_extensions==4.15.0
++tzdata==2024.1
++uc-micro-py==1.0.3
++unicode==2.9
++Unidecode==1.3.8
++uri-template==1.3.0
++urllib3==2.2.2
++warnings-plugin==0.0.2
++wcwidth==0.2.13
++webcolors==24.6.0
++webdriver-manager==4.0.2
++webencodings==0.5.1
++websocket-client==1.8.0
++Werkzeug==3.0.3
++wheel==0.44.0
++widgetsnbextension==4.0.13
++Wikipedia-API==0.7.1
++WMI==1.5.1
++wordcloud==1.9.3
++wrapt==1.17.0
++wsproto==1.2.0
++xarray==2024.6.0
++xeus-python==0.15.12
++xeus-python-shell==0.5.0
++xgboost==1.6.2
++xlrd==2.0.1
++XlsxWriter==3.2.0
++xyzservices==2024.6.0
++zipfile2==0.0.12
++zipp==3.19.2
++zope.interface==6.4.post2
++zstandard==0.22.0
+Index: Href_Links_Extractor_Saver.py
+IDEA additional info:
+Subsystem: com.intellij.openapi.diff.impl.patch.BaseRevisionTextPatchEP
+<+>\r\n\r\nfrom imports import *\r\nfailed_url = []\r\nextraction_summary_log=[]\r\ndef get_pdf_href(url):\r\n    os.environ['WDM_LOG_LEVEL'] = '0'\r\n    service = Service(log_output=os.devnull)\r\n    options = Options()\r\n    # options.add_argument(\"--headless\")\r\n    options.add_argument(\"--disable-gpu\")\r\n    options.add_argument(\"--no-sandbox\")\r\n    options.add_argument(\"--ignore-certificate-errors\")\r\n    options.add_argument(\"--silent\")\r\n    options.add_experimental_option(\"excludeSwitches\", [\"enable-logging\"])\r\n    options.add_argument(\"--log-level=3\")\r\n\r\n    driver = None\r\n    try:\r\n        driver = webdriver.Chrome(service=service,options=options)\r\n        href_list = []\r\n        driver.get(url)\r\n        driver.maximize_window()\r\n        wait = WebDriverWait(driver, 15)\r\n\r\n        # try:\r\n        #     accept_button = wait.until(EC.element_to_be_clickable((\r\n        #         By.XPATH,\r\n        #         \"//button[contains(translate(., 'ABCDEFGHIJKLMNOPQRSTUVWXYZ', 'abcdefghijklmnopqrstuvwxyz'), 'accept') or contains(translate(., 'ABCDEFGHIJKLMNOPQRSTUVWXYZ', 'abcdefghijklmnopqrstuvwxyz'), 'agree')]\"\r\n        #     )))\r\n        #     driver.execute_script(\"arguments[0].click();\", accept_button)\r\n        # except TimeoutException:\r\n        #     pass\r\n        #Handling Accept button in both normal html page or in iframe\r\n        try:\r\n            try:\r\n                cookie_iframe = wait.until(EC.presence_of_element_located((By.XPATH, \"//*[@id='CybotCookiebotDialogBodyUnderlay']\")))\r\n            # \"//iframe[contains(@id, 'Cookiebot') or contains(@id, 'cookie') or contains(@src, 'cookiebot')]\")))\r\n                driver.switch_to.frame(cookie_iframe)\r\n                # //*[@id=\"CybotCookiebotDialogBodyUnderlay\"]\r\n            except TimeoutException:\r\n                pass\r\n            accept_button = wait.until(EC.element_to_be_clickable((By.XPATH,\"//button[contains(translate(., 'ABCDEFGHIJKLMNOPQRSTUVWXYZ', 'abcdefghijklmnopqrstuvwxyz'), 'accept') or contains(translate(., 'ABCDEFGHIJKLMNOPQRSTUVWXYZ', 'abcdefghijklmnopqrstuvwxyz'), 'agree')]\")))\r\n            driver.execute_script(\"arguments[0].click();\", accept_button)\r\n        except TimeoutException:\r\n            pass\r\n        finally:\r\n            try:\r\n                driver.switch_to.default_content()\r\n            except Exception:\r\n                pass\r\n        elements = []\r\n        try:\r\n            wait.until(EC.presence_of_element_located((By.TAG_NAME, \"a\")))\r\n            elements = driver.find_elements(By.TAG_NAME, \"a\")\r\n        except TimeoutException:\r\n            try:\r\n                wait.until(EC.presence_of_element_located((By.TAG_NAME, \"tr\")))\r\n                elements = driver.find_elements(By.XPATH, \"//tr//a\")\r\n            except TimeoutException:\r\n                pass\r\n\r\n        for element in elements:\r\n            try:\r\n                href = element.get_attribute(\"href\")\r\n                if href:\r\n                    url_lower = href.lower()\r\n                    if any(ext in url_lower for ext in [\".pdf\", \"download\", \".php\", \".shtml\",\"file\"]):\r\n                        if href not in href_list:\r\n                            href_list.append(href)\r\n            except Exception:\r\n                continue\r\n\r\n        if href_list:\r\n            return href_list\r\n        failed_url.append(url)\r\n        # return \"No PDF links found on the page.\"\r\n\r\n    except WebDriverException:\r\n        failed_url.append(url)\r\n        return \"Failed to load or process the page.\"\r\n    finally:\r\n        if driver:\r\n            # pass\r\n            driver.quit()\r\n\r\ntarget_urls = []\r\nif os.path.exists(input_file):\r\n    with open(input_file,encoding='utf-8') as file:\r\n        target_urls =[line.strip() for line in file if line.strip()]\r\nos.makedirs(LINKS_DIR,exist_ok=True)\r\nfor url in tqdm.tqdm(target_urls,desc=\"Extracting report URLs\", unit=\"company_url\"):\r\n    link_name = urlparse(url).netloc.replace('www.', '').replace('.com', '')\r\n    delay = random.uniform(1.5, 5.5)\r\n    time.sleep(delay)\r\n    result = get_pdf_href(url)\r\n    # print(result)\r\n    if result:\r\n        if not LINKS_DIR:\r\n            LINKS_DIR = 'Extracted_Links'\r\n            os.makedirs(LINKS_DIR, exist_ok=True)\r\n        target_dir = os.path.join(LINKS_DIR, date_part)\r\n        os.makedirs(target_dir, exist_ok=True)\r\n        filepath = os.path.join(target_dir, f'{link_name}.txt')\r\n        with open(filepath, 'w',encoding='utf-8') as f:\r\n            for link in result:\r\n                f.write(link + '\\n')\r\n        # print(f'Saved {len(result)} link(s) to {link_name}.txt')\r\n        extraction_summary_log.append(f'Saved {len(result)} link(s) to {link_name}.txt')\r\n    else:\r\n        pass\r\n\r\n\r\nprint(\"\\n --- EXTRACTION REPORT ----\")\r\nprint(f'\\n Failed URL(s) :')\r\nfor url in failed_url:\r\n    print(url)\r\nprint(f'\\n')\r\nprint(\"\\n URLs count per each company website search:\")\r\nprint(\"..........................................................\")\r\nprint(\"\\n\".join(extraction_summary_log))\r\n
+Subsystem: com.intellij.openapi.diff.impl.patch.CharsetEP
+<+>UTF-8
+===================================================================
+diff --git a/Href_Links_Extractor_Saver.py b/Href_Links_Extractor_Saver.py
+--- a/Href_Links_Extractor_Saver.py	(revision afccadbbf83796d0810c13031559962cb2f947bd)
++++ b/Href_Links_Extractor_Saver.py	(date 1782451908552)
+@@ -7,7 +7,7 @@
+     os.environ['WDM_LOG_LEVEL'] = '0'
+     service = Service(log_output=os.devnull)
+     options = Options()
+-    # options.add_argument("--headless")
++    options.add_argument("--headless")
+     options.add_argument("--disable-gpu")
+     options.add_argument("--no-sandbox")
+     options.add_argument("--ignore-certificate-errors")
+@@ -15,9 +15,11 @@
+     options.add_experimental_option("excludeSwitches", ["enable-logging"])
+     options.add_argument("--log-level=3")
+ 
++
+     driver = None
+     try:
+         driver = webdriver.Chrome(service=service,options=options)
++        driver.maximize_window()
+         href_list = []
+         driver.get(url)
+         driver.maximize_window()
