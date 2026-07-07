@@ -219,9 +219,6 @@ pytorch_revgrad==0.2.0
 pytweening==1.2.0
 pytz==2024.1
 pyviz_comms==3.0.2
-pywin32==306
-pywin32-ctypes==0.2.3
-pywinpty==2.0.13
 PyYAML==6.0.1
 pyzmq==26.0.3
 RapidFuzz==3.10.0
